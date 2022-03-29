@@ -137,7 +137,6 @@ const sections = document.querySelectorAll('.section')
 
 const revalSection = (entries, observer) => {
   const [entry] = entries
-  console.log(entries)
   if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden')
   observer.unobserve(entry.target)
@@ -169,3 +168,75 @@ const imgObserver = new IntersectionObserver(loadImg, {
   rootMargin: '200px'
 })
 imgTarget.forEach(section => imgObserver.observe(section))
+
+//slider
+const slides = document.querySelectorAll('.slide')
+const slider = document.querySelector('.slider')
+const btnLeft = document.querySelector('.slider__btn--left')
+const btnRight = document.querySelector('.slider__btn--right')
+const dotContainer = document.querySelector('.dots')
+console.log(slides)
+let currentSlide = 0
+let maxSlide = slides.length
+
+slides.forEach((slide, index) => {
+  slide.style.transform = `transformX(${100 * (index)}%)`
+})
+
+const createDots = function () {
+  slides.forEach(function (_, i) {
+    dotContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide="${i}"></button> `)
+  })
+}
+createDots()
+
+const activateDot = (slide) => {
+  const dots = document.querySelectorAll('.dots__dot')
+  dots.forEach(dot => {
+    dot.classList.remove('dots__dot--active')
+  })
+  document.querySelector(`.dots__dot[data-slide="${slide}"]`)
+    .classList.add('dots__dot--active')
+}
+activateDot(0)
+//go to slide when user click next or previous button
+const goToSlide = (currentSlide) => {
+  slides.forEach((slide, index) => {
+    slide.style.transform = `translateX(${100 * (index - currentSlide)}%)`
+  })
+  activateDot(currentSlide)
+}
+//handle when user click next btn
+const nextSlide = function () {
+  console.log('hello')
+  if (currentSlide == maxSlide - 1) currentSlide = 0
+  else currentSlide++
+  goToSlide(currentSlide)
+}
+//handle when user click previous btn
+const previousSlide = function () {
+  if (currentSlide == 0) currentSlide = maxSlide - 1
+  else currentSlide--
+  goToSlide(currentSlide)
+}
+
+btnRight.addEventListener('click', () => nextSlide())
+btnLeft.addEventListener('click', () => previousSlide())
+
+slider.style.overflow = 'hidden'
+
+slides.forEach((slide, index) => {
+  slide.style.transform = `translateX(${100 * index}%)`
+})
+//handle when user type arrow btn to change slide
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'ArrowLeft') previousSlide()
+  if (e.key === 'ArrowRight') nextSlide()
+})
+//handle when user click dot to change slide
+dotContainer.addEventListener('click', function (e) {
+  if (e.target.classList.contains('dots__dot')) {
+    const slide = e.target.dataset.slide;
+    goToSlide(slide)
+  }
+})
