@@ -122,7 +122,7 @@ const navHeight = nav.getBoundingClientRect().height
 
 const stickyNav = function (entries) {
   const [entry] = entries
-  if (!entry.isIntersecting) nav.classList.add('sticky')
+  if (!entry.isIntersecting && window.innerWidth > 1000) nav.classList.add('sticky')
   else nav.classList.remove('sticky')
 }
 const headerObserver = new IntersectionObserver(stickyNav, {
@@ -239,4 +239,23 @@ dotContainer.addEventListener('click', function (e) {
     const slide = e.target.dataset.slide;
     goToSlide(slide)
   }
+})
+//responsive
+//responsive nav
+
+const burgerContainer = document.querySelector('.burger__container')
+const navLinks = document.querySelector('.nav__links')
+const navModal = document.querySelector('.nav__modal')
+const navCloseBtn = document.querySelector('.nav__closebtn')
+//open nav
+burgerContainer.addEventListener('click', function () {
+  navLinks.style.transform = 'translateX(0)'
+  navModal.style.display = 'block'
+  navModal.style.opacity = '1'
+})
+//close nav
+navCloseBtn.addEventListener('click', function () {
+  navLinks.style.transform = 'translateX(-100%)'
+  navModal.style.opacity = '0'
+  navModal.style.display = 'none'
 })
